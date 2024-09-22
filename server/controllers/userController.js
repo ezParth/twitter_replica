@@ -9,19 +9,19 @@ dotenv.config({
 
 const Register = async (req, res) => {
     try {
-        const {name, username, email, password} = req.body;
-        if(!name || !username || !emamil || !password ){
+        const { name, username, email, password } = req.body;
+        if (!name || !username || !email || !password) {
             return res.status(401).json({
                 message: "Please enter all the details",
                 success: false
-            })
+            });
         }
-        const user = await User.findOne(email);
-        if(user){
+        const user = await User.findOne({ email });
+        if (user) {
             return res.status(401).json({
-                messgae: "User already exists! pls login",
+                message: "User already exists! Please login",
                 success: false
-            })
+            });
         }
 
         const hashedPassword = await bcryptjs.hash(password, 16);
@@ -36,52 +36,59 @@ const Register = async (req, res) => {
         return res.status(201).json({
             message: "Account created successfully",
             success: true,
-        })
+        });
     } catch (error) {
-        console.log("**Error during register**",error)
+        console.log("**Error during register**", error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false,
+        });
     }
-}
+};
 
 const login = async (req, res) => {
     try {
-        const {email, password} = req.body;
-        if( !emamil || !password ){
+        const { email, password } = req.body;
+        if (!email || !password) {
             return res.status(401).json({
-                message: "Please Enter all fields",
-                success: true,
-            })
-        }
-        const user = await User.findOne({email});
-        if(!user){
-            return res.status(401).json({
-                message: "User doesn't exists",
+                message: "Please enter all fields",
                 success: false,
-            })
+            });
+        }
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).json({
+                message: "User doesn't exist",
+                success: false,
+            });
         }
         const isPassword = bcryptjs.compareSync(password, user.password);
-        if(!isPassword){
+        if (!isPassword) {
             return res.status(401).json({
-                messgae: "Incorrect email or password",
+                message: "Incorrect email or password",
                 success: false,
-            })
+            });
         }
-        const token = await jwt.sign(user._id, process.env.SECRET, {expiresIn:"1d"})
-        return res.status(201).cookie("token", token, {expiresIn:"1d", httpOnly:true}).json({
+        const token = await jwt.sign({ id: user._id }, process.env.SECRET, { expiresIn: "1d" });
+        return res.status(201).cookie("token", token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true }).json({
             message: `Welcome back ${user.name}`,
             success: true
-        })
+        });
     } catch (error) {
-        console.log("**error during login**", error)
-    }    
-}
+        console.log("**Error during login**", error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false,
+        });
+    }
+};
 
 const logout = (req, res) => {
-    return res.cookie("token", "", {expiresIn: new Date(Dtae.now())}).json({
-        messgae: "User logged out successfully!",
+    return res.cookie("token", "", { maxAge: 0 }).json({
+        message: "User logged out successfully!",
         success: true,
-    })
-
-}
+    });
+};
 
 const bookmarks = async(req, res) => {
     try {

@@ -1,6 +1,7 @@
 const express = require("express");
 const { Register, login, logout, bookmarks, getMyProfile, getOtherUsers, follow, unfollow } = require("../controllers/userController");
 const router = express.Router();
+const isAuthenticated = require("../config/auth")
 
 router.route("/register").post(Register);
 router.route("/login").post(login)
