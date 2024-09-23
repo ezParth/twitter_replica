@@ -10,12 +10,31 @@ dotenv.config({
 const Register = async (req, res) => {
     try {
         const { name, username, email, password } = req.body;
-        if (!name || !username || !email || !password) {
+        if (!name) {
             return res.status(401).json({
-                message: "Please enter all the details",
+                message: "Please enter your name",
                 success: false
             });
         }
+        if (!username) {
+            return res.status(401).json({
+                message: "Please enter your username",
+                success: false
+            });
+        }
+        if (!email) {
+            return res.status(401).json({
+                message: "Please enter your email",
+                success: false
+            });
+        }
+        if (!password) {
+            return res.status(401).json({
+                message: "Please enter your password",
+                success: false
+            });
+        }
+                                
         const user = await User.findOne({ email });
         if (user) {
             return res.status(401).json({

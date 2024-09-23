@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import logo from "../assets/X_logo.png";
 import axios from "axios";
 import { USER_API_END_POINT } from "../utils/Constants";
+import toast from "react-hot-toast"
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -17,14 +18,20 @@ function Login() {
   const submitHandler = async(e) =>{
     e.preventDefault();
     if(isLogin){
+      try{
         const res = await axios.post(`${USER_API_END_POINT}/login`, {email, password}, {
           headers:{
             "Content-Type":"application/josn"
           },
           withCredentials:true
         })
-        console.log(res);
-        
+        if(res.data.success){
+          toast.success(res.data.message)
+        }
+      }catch{
+        toast.success(res.data.message)
+        console.log(error);
+      }
     }else{
       //signup
       try {
@@ -33,10 +40,13 @@ function Login() {
             "Content-Type":"application/josn"
           },
           withCredentials:true
-        })
-        console.log(res)
+        });
+        if(res.data.success){
+          toast.success(error.response.data.message)
+        }
       } catch (error) {
-        console.log("login error in frontend", error);
+        toast.success(error.response.data.message)
+        console.log(error);
       }
 
     }
