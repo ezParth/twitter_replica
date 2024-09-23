@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import logo from "../assets/X_logo.png";
 import axios from "axios";
 import { USER_API_END_POINT } from "../utils/Constants";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -10,47 +11,65 @@ function Login() {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading , setloading] = useState(false);
+  const navigate = useNavigate();
 
-  const loginSignupHandler = () => {
-    setIsLogin(!isLogin);
-  };
-
-  const submitHandler = async(e) =>{
+  const submitHandler = async (e) => {
     e.preventDefault();
-    if(isLogin){
-      try{
-        const res = await axios.post(`${USER_API_END_POINT}/login`, {email, password}, {
-          headers:{
-            "Content-Type":"application/josn"
-          },
-          withCredentials:true
-        })
-        if(res.data.success){
-          toast.success(res.data.message)
+    setloading(true);
+    if (isLogin) {
+      try {
+        const res = await axios.post(
+          `${USER_API_END_POINT}/login`,
+          { email, password },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        if (res.data.success) {
+          navigate("/");
+          toast.success(res.data.message);
         }
-      }catch{
-        toast.success(res.data.message)
+      } catch (error){
+        if (error.response) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("An unexpected error occurred");
+        }
         console.log(error);
       }
-    }else{
+      setloading(false);
+    } else {
       //signup
       try {
-        const res = await axios.post(`${USER_API_END_POINT}/register`, {name, username, email, password}, {
-          headers:{
-            "Content-Type":"application/josn"
-          },
-          withCredentials:true
-        });
-        if(res.data.success){
-          toast.success(error.response.data.message)
+        const res = await axios.post(
+          `${USER_API_END_POINT}/register`,
+          { name, username, email, password },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        if (res.data.success) {
+          setIsLogin(true);
+          toast.success(res.data.message);
         }
       } catch (error) {
-        toast.success(error.response.data.message)
+        if (error.response) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("An unexpected error occurred");
+        }
         console.log(error);
       }
-
+      setloading(false);
     }
-  }
+  };
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
@@ -98,13 +117,13 @@ function Login() {
               placeholder="Password"
               className="outline-blue-500 border border-gray-800 px-3 py-2 rounded-full my-1 font-semibold"
             />
-            <button className="bg-[#1D9BF0] border-none py-2 my-4 rounded-full text-lg text-white">
-              {isLogin ? "Login" : "Create Account"}
+            <button className={`bg-[#1D9BF0] border-none py-2 my-4 rounded-full text-lg text-white ${loading ? "opacity-70 cursor-not-allowed": ''}`} disabled={loading}>
+              {loading ? "Loading...":(isLogin ? "Login" : "Create Account")}
             </button>
             <h1>
               {isLogin ? "doesn't have an account? " : "Already have account? "}{" "}
               <span
-                onClick={loginSignupHandler}
+                onClick={() => setIsLogin(!isLogin)}
                 className="cursor-pointer font-bold text-blue-600"
               >
                 {isLogin ? "Signup" : "Login"}
