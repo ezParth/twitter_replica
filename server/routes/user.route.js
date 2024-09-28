@@ -8,7 +8,7 @@ router.route("/login").post(login)
 router.route("/logout").get(logout);
 router.route("/bookmark/:id").put(isAuthenticated, bookmarks);
 router.route("/profile/:id").get(isAuthenticated, getMyProfile);
-router.route("/otherUser/:id").get(isAuthenticated, getOtherUsers);
+router.route("/otherUsers/:id").get(isAuthenticated, getOtherUsers);
 router.route("/follow/:id").get(isAuthenticated, follow);
 router.route("/unfollow/:id").get(isAuthenticated, unfollow);
 

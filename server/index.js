@@ -29,5 +29,4 @@ app.use(cors(corsOptions))
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/tweet", tweetRoute)
 
-
 app.listen(process.env.PORT, () => console.log(`Example app listening on port ${process.env.PORT}!`))

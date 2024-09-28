@@ -1,11 +1,18 @@
 import React from "react";
 import biden from "../assets/biden.jpg";
 import { IoMdArrowBack } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Avatar from "react-avatar";
 import pic from "../assets/profile_pic.png";
+import { useSelector } from "react-redux";
+import useGetprofile from "../Hooks/useGetProfile"
 
 function Profile() {
+  const {profile}  = useSelector(store=>store.user)
+  const {id} = useParams();
+  useGetprofile(id);
+  console.log("I am this id : ",id);
+  console.log(profile)
   return (
     <div className="w-[50%] border-l border-r border-gray-200">
       <div className="aspect-[3/1]">
@@ -17,7 +24,7 @@ function Profile() {
             <IoMdArrowBack size="24px" />
           </Link>
           <div className="ml-2">
-            <h1 className="font-bold text-lg">Parth Singh</h1>
+            <h1 className="font-bold text-lg">{profile?.name}</h1>
             <p className="text-gray-500 text-sm">10 posts</p>
           </div>
         </div>
@@ -50,8 +57,8 @@ function Profile() {
             <button className="outline-none px-4 py-2 text-xl text-black border border-gray-200 rounded-full font-bold hover:bg-gray-200">Edit Profile</button>
           </div>
           <div className="m-4">
-            <h1 className="font-bold text-2xl">Parth</h1>
-            <p>@ezParth</p>
+            <h1 className="font-bold text-2xl">{profile?.name}</h1>
+            <p>{profile?.username.charAt(0) == '@' ? `${profile?.username}` : `@${profile?.username}`}</p>
           </div>
           <div className="m-4 text-sm">
             <p>👨‍💻 Passionate Software Developer | 🚀 Building the Future with Code | 💡 Innovator & Problem Solver | 🌐 Web Dev Enthusiast | 📚 Lifelong Learner | 🌟 Sharing Tips & Tricks | 💬 Let’s Connect!</p>

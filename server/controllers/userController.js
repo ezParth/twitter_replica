@@ -91,6 +91,7 @@ const login = async (req, res) => {
         const token = await jwt.sign({ id: user._id }, process.env.SECRET, { expiresIn: "1d" });
         return res.status(201).cookie("token", token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true }).json({
             message: `Welcome back ${user.name}`,
+            user,
             success: true
         });
     } catch (error) {
@@ -136,7 +137,7 @@ const bookmarks = async(req, res) => {
 
 const getMyProfile = async(req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.user;
         const user = await User.findById(id).select("-password");
         return res.status(200).json({
             user
