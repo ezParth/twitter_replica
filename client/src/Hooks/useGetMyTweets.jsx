@@ -1,10 +1,10 @@
 import axios from "axios";
-import { USER_API_END_POINT } from "../utils/Constants";
+import { TWEET_API_END_POINT} from "../utils/Constants";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMyProfile } from "../redux/userSlice";
 
-const useGetprofile = (id) => {
+const useGetMyTweets = (id) => {
   const dispatch = useDispatch();
   const { otherUsers } = useSelector(store => store.user);
 
@@ -18,9 +18,9 @@ const useGetprofile = (id) => {
       console.log("Fetching user profile from API");
       const source = axios.CancelToken.source();
 
-      const fetchMyProfile = async () => {
+      const fetchMyTweets = async () => {
         try {
-          const res = await axios.get(`${USER_API_END_POINT}/profile/${id}`, {
+          const res = await axios.get(`${TWEET_API_END_POINT}/alltweets/${id}`, {
             withCredentials: true,
             cancelToken: source.token,
           });
@@ -34,7 +34,7 @@ const useGetprofile = (id) => {
         }
       };
 
-      fetchMyProfile();
+      fetchMyTweets();
       return () => {
         source.cancel("Operation canceled due to new request");
       };
@@ -42,4 +42,4 @@ const useGetprofile = (id) => {
   }, [id, otherUsers, dispatch]);
 };
 
-export default useGetprofile;
+export default useGetMyTweets;

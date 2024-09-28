@@ -17,7 +17,6 @@ const userSlice = createSlice({
         },
         getMyProfile:(state, action) => {
             state.profile = action.payload
-            console.log("redux payload***********", action.payload)
         }
     }
 })
